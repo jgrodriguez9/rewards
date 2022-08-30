@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Row, Col, Card, Spinner, Button, Form, Alert } from 'react-bootstrap';
 import getInformation from "../../api/service";
-import { calculateResult } from "../../utils/calculateResult";
+import { CalculateResult } from "../../utils/calculateResult";
 import RewardPerMonth from "../RewardPerMonth/RewardPerMonth";
 import RewardTotal from "../RewardTotal/RewardTotal";
 
@@ -24,7 +23,7 @@ function Dashboard(){
         try {
             const response = await getInformation(number);
             if(response.status === 200){
-                const results = calculateResult(response.data); 
+                const results = CalculateResult(response.data); 
                 setData({
                     status: response.status,
                     message: response.message,
@@ -35,54 +34,72 @@ function Dashboard(){
         } catch (error) {
             setData(error)
             setLoading(false)
+        } finally {
+            setLoading(false)
         }
     }
+
+    const renderInformation = (status) => {
+        switch(status){
+            case 200: 
+                return (
+                    <div className="d-flex">
+                        <div className="view-2">
+                            <div className="box">
+                                <div className="box-header">
+                                    <h6>Reward Point Result</h6>
+                                </div>
+                                <div className="box-body">
+                                    <RewardPerMonth data={data.data}/>
+                                    <RewardTotal data={data.data}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            case 400:
+                return (
+                    <div className="d-flex">
+                        <div className="view-1">
+                            <div className="error-message">
+                                {data.message}
+                            </div>
+                        </div>
+                    </div>  
+                )
+            default: 
+                return null;
+        }
+    }
+
     return (
         <>
-            <Row className="mb-5">
-                <Col xs="12" md={{span: 4, offset: 4}}>
-                    <Form.Control 
-                        type="number" 
+            <div className="d-flex mb-5">
+                <div className="view-1">
+                    <input 
+                        className="input-1" 
                         value={number} 
-                        data-testid="input-element" 
-                        onChange={e=>setNumber(e.target.value)} 
+                        data-testid="input-element"
+                        onChange={e=>setNumber(e.target.value)}
+                        type="number"
                     />
-                    <Form.Text className="text-muted">
-                        Please enter 3 - error handler purpose
-                    </Form.Text>
-                    <div className="d-grid gap-2 mt-2">
-                        <Button variant="primary" onClick={getData} data-testid="btn-send-request">Send</Button>
-                    </div>                    
-                </Col>
-            </Row>
+                    <small className="text-help">Please enter 3 - error handler purpose</small>
 
-            {
-                loading && <div className="text-center" data-testid="div-spinner"><Spinner animation="border" variant="primary"/></div>
-            }
+                    <div className="mt-2 d-grid">
+                        <button 
+                            className="btn-1" 
+                            onClick={getData} 
+                            data-testid="btn-send-request"
+                        >
+                            Send
+                        </button>
+                    </div>
+                </div>                
+            </div>
 
-            {
-                data.status === 400 && 
-                <Row>
-                    <Col xs="12" md={{span: 4, offset: 4}}>
-                        <Alert variant="danger">
-                            {data.message}
-                        </Alert>
-                    </Col>
-                </Row>                 
-            }
-
-            {
-                data.status === 200 && 
-                <Card>
-                    <Card.Header>Reward Point Result</Card.Header>
-                    <Card.Body>
-                        <RewardPerMonth data={data.data}/>
-                        <RewardTotal data={data.data}/>
-                    </Card.Body>
-                </Card>
-            }
+            {loading && <div className="align-center" data-testid="div-spinner"><div className="spin"></div></div>}
+            {renderInformation(data.status)}
         </>
-        
     )
     
 }

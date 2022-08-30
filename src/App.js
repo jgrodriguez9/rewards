@@ -1,19 +1,19 @@
-import { Container, Row, Col } from 'react-bootstrap';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 import Dashboard from './components/Dashboard/Dashboard';
+
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import './public/App.css';
+import './public/Media.css'
 
 
 function App() {
   return (
-    <Container fluid>
-      <Row className='p-5'>
-        <Col xs="12" md={{span: 8, offset: 2}}>
+    <div className='container'>
+      <div className='d-flex'>
+        <div className='adjust-content p-5'>
           <Dashboard />
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>    
   );
 }
 
