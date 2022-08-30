@@ -1,6 +1,6 @@
 import { useState } from "react";
-import getInformation from "../../api/service";
-import { CalculateResult } from "../../utils/calculateResult";
+import get from "../../api/transactions";
+import { CalculateResult } from "../../utils/CalculateResult";
 import RewardPerMonth from "../RewardPerMonth/RewardPerMonth";
 import RewardTotal from "../RewardTotal/RewardTotal";
 
@@ -21,7 +21,7 @@ function Dashboard(){
         })
         setLoading(true)
         try {
-            const response = await getInformation(number);
+            const response = await get(number);
             if(response.status === 200){
                 const results = CalculateResult(response.data); 
                 setData({
@@ -29,6 +29,8 @@ function Dashboard(){
                     message: response.message,
                     data: results 
                 })
+            }else{
+                setData(response)
             }
             setLoading(false)
         } catch (error) {
@@ -58,6 +60,7 @@ function Dashboard(){
                     </div>
                 )
             case 400:
+            case 500:
                 return (
                     <div className="d-flex">
                         <div className="view-1">

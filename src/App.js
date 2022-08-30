@@ -1,6 +1,4 @@
 import Dashboard from './components/Dashboard/Dashboard';
-
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import './public/App.css';
 import './public/Media.css'
 
